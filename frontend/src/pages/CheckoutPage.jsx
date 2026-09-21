@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import api from '../services/api'
 
+const inputClass =
+  'border border-neutral-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-aqua/40 focus:border-aqua transition'
+
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart()
   const { state } = useLocation()
@@ -49,12 +52,12 @@ export default function CheckoutPage() {
 
   if (result) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-16 text-center bg-white rounded-2xl shadow-sm mt-8">
-        <h2 className="text-xl font-semibold mb-2">Pedido {result.order.order_number} criado! 🎉</h2>
+      <div className="max-w-lg mx-auto px-4 py-16 text-center bg-white rounded-2xl shadow-sm border border-neutral-100 mt-8">
+        <h2 className="font-serif font-medium text-2xl mb-2">Pedido {result.order.order_number} criado! 🎉</h2>
         {paymentMethod === 'pix' && result.payment.qr_code_base64 ? (
           <>
             <p className="text-sm text-neutral-600 mb-4">Escaneie o QR Code para pagar via Pix:</p>
-            <img src={`data:image/png;base64,${result.payment.qr_code_base64}`} className="mx-auto w-48 h-48" />
+            <img src={`data:image/png;base64,${result.payment.qr_code_base64}`} alt="QR Code Pix" className="mx-auto w-48 h-48" />
           </>
         ) : (
           <p className="text-sm text-neutral-600">Finalize o pagamento na tela do Mercado Pago.</p>
@@ -67,12 +70,14 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
+    <div className="max-w-3xl mx-auto px-4 py-10 space-y-10">
+      <h1 className="font-serif font-medium text-3xl">Finalizar compra</h1>
+
       <section>
-        <h2 className="font-semibold mb-3">Endereço de entrega</h2>
+        <h2 className="font-medium mb-3">Endereço de entrega</h2>
         <div className="space-y-2">
           {addresses.map((a) => (
-            <label key={a.id} className="flex items-center gap-2 bg-white p-3 rounded-xl shadow-sm">
+            <label key={a.id} className="flex items-center gap-2 bg-white p-3 rounded-xl shadow-sm border border-neutral-100">
               <input type="radio" checked={addressId === a.id} onChange={() => setAddressId(a.id)} />
               <span className="text-sm">{a.street}, {a.number} - {a.city}/{a.state}</span>
             </label>
@@ -84,34 +89,34 @@ export default function CheckoutPage() {
             {['zipcode', 'street', 'number', 'neighborhood', 'city', 'state'].map((f) => (
               <input key={f} placeholder={f} value={newAddress[f]}
                 onChange={(e) => setNewAddress((p) => ({ ...p, [f]: e.target.value }))}
-                className="border rounded-lg px-2 py-1 text-sm" />
+                className={inputClass} />
             ))}
           </div>
-          <button onClick={saveNewAddress} className="mt-2 text-sm bg-neutral-800 text-white rounded-lg px-3 py-1">Salvar endereço</button>
+          <button onClick={saveNewAddress} className="mt-2 text-sm bg-neutral-800 text-white rounded-xl px-3 py-1.5 hover:bg-neutral-700 transition-colors">Salvar endereço</button>
         </details>
       </section>
 
       <section>
-        <h2 className="font-semibold mb-3">Cadastro</h2>
+        <h2 className="font-medium mb-3">Cadastro</h2>
         <p className="text-sm text-neutral-500">Nome, CPF, e-mail e telefone já cadastrados na conta são usados automaticamente.</p>
       </section>
 
       <section>
-        <h2 className="font-semibold mb-3">Pagamento</h2>
-        <div className="flex gap-3">
+        <h2 className="font-medium mb-3">Pagamento</h2>
+        <div className="flex gap-3 flex-wrap">
           {[['pix', 'Pix'], ['credit_card', 'Cartão de Crédito'], ['debit_card', 'Cartão de Débito']].map(([val, label]) => (
             <button key={val} onClick={() => setPaymentMethod(val)}
-              className={`px-4 py-2 rounded-full border text-sm ${paymentMethod === val ? 'bg-aqua text-white border-aqua' : 'border-neutral-300'}`}>
+              className={`px-4 py-2 rounded-full border text-sm transition-colors ${paymentMethod === val ? 'bg-aqua text-white border-aqua' : 'border-neutral-300 hover:border-aqua'}`}>
               {label}
             </button>
           ))}
         </div>
       </section>
 
-      <section className="bg-white rounded-2xl p-4 shadow-sm">
+      <section className="bg-white rounded-2xl p-5 shadow-sm border border-neutral-100">
         <div className="flex justify-between text-sm"><span>Subtotal</span><span>R$ {subtotal.toFixed(2)}</span></div>
         <div className="flex justify-between text-sm"><span>Frete</span><span>R$ {shipping.toFixed(2)}</span></div>
-        <div className="flex justify-between font-semibold border-t mt-2 pt-2">
+        <div className="flex justify-between font-semibold border-t border-neutral-200 mt-2 pt-2">
           <span>Total</span><span>R$ {(subtotal + shipping).toFixed(2)}</span>
         </div>
       </section>
@@ -119,7 +124,7 @@ export default function CheckoutPage() {
       {error && <p className="text-sm text-red-500">{error}</p>}
 
       <button onClick={submitOrder} disabled={!addressId}
-        className="w-full bg-aqua text-white rounded-full py-3 font-medium hover:bg-aqua-dark disabled:opacity-50">
+        className="w-full btn-primary">
         Confirmar Pedido
       </button>
     </div>

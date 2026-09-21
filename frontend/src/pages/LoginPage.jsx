@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
+const inputClass =
+  'w-full border border-neutral-200 rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-aqua/40 focus:border-aqua transition'
+
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -21,15 +24,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="max-w-sm mx-auto px-4 py-16">
-      <h1 className="text-2xl font-semibold mb-6 text-center">Entrar</h1>
-      <form onSubmit={handleSubmit} className="space-y-3">
+    <div className="max-w-sm mx-auto px-4 py-20">
+      <h1 className="font-serif font-medium text-3xl mb-8 text-center">Entrar</h1>
+      <form onSubmit={handleSubmit} className="space-y-3 bg-white rounded-2xl p-6 shadow-sm border border-neutral-100">
         <input required type="email" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)}
-          className="w-full border rounded-lg px-3 py-2" />
+          className={inputClass} />
         <input required type="password" placeholder="Senha" value={password} onChange={(e) => setPassword(e.target.value)}
-          className="w-full border rounded-lg px-3 py-2" />
+          className={inputClass} />
         {error && <p className="text-sm text-red-500">{error}</p>}
-        <button disabled={loading} className="w-full bg-aqua text-white rounded-full py-3 font-medium hover:bg-aqua-dark">
+        <button disabled={loading} className="w-full btn-primary">
           {loading ? 'Entrando...' : 'Entrar'}
         </button>
       </form>

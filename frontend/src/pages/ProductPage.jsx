@@ -4,6 +4,9 @@ import api from '../services/api'
 import { useCart } from '../context/CartContext'
 import ProductCard from '../components/ProductCard'
 
+const inputClass =
+  'border border-neutral-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-aqua/40 focus:border-aqua transition'
+
 export default function ProductPage() {
   const { slug } = useParams()
   const [product, setProduct] = useState(null)
@@ -23,7 +26,7 @@ export default function ProductPage() {
     })
   }, [slug])
 
-  if (!product) return <p className="max-w-7xl mx-auto px-4 py-8">Carregando...</p>
+  if (!product) return <p className="max-w-7xl mx-auto px-4 py-8 text-neutral-500">Carregando...</p>
 
   const colors = [...new Set(product.variants.map((v) => v.color).filter(Boolean))]
   const sizes = [...new Set(product.variants.map((v) => v.size).filter(Boolean))]
@@ -44,14 +47,15 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="grid md:grid-cols-2 gap-10">
-        {/* Galeria com zoom simples via hover-scale */}
+    <div className="max-w-7xl mx-auto px-4 py-10">
+      <div className="grid md:grid-cols-2 gap-12">
+        {/* Galeria */}
         <div>
           <div className="aspect-square rounded-2xl overflow-hidden bg-blush-light/30 mb-3">
             {product.images[activeImage] && (
               <img
                 src={`${apiBase}/storage/${product.images[activeImage].path}`}
+                alt={product.name}
                 className="w-full h-full object-cover hover:scale-125 transition duration-300 cursor-zoom-in"
               />
             )}
@@ -59,37 +63,37 @@ export default function ProductPage() {
           <div className="flex gap-2">
             {product.images.map((img, i) => (
               <button key={img.id} onClick={() => setActiveImage(i)}
-                className={`w-16 h-16 rounded-lg overflow-hidden border-2 ${i === activeImage ? 'border-aqua' : 'border-transparent'}`}>
-                <img src={`${apiBase}/storage/${img.path}`} className="w-full h-full object-cover" />
+                className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors ${i === activeImage ? 'border-aqua' : 'border-transparent'}`}>
+                <img src={`${apiBase}/storage/${img.path}`} alt="" className="w-full h-full object-cover" />
               </button>
             ))}
           </div>
           {product.video_url && (
-            <a href={product.video_url} target="_blank" className="text-sm text-aqua-dark underline mt-2 inline-block">
+            <a href={product.video_url} target="_blank" rel="noopener noreferrer" className="text-sm text-aqua-dark underline mt-3 inline-block">
               Ver vídeo do produto
             </a>
           )}
         </div>
 
-        {/* Informacoes e compra */}
+        {/* Informações e compra */}
         <div>
-          <h1 className="text-2xl font-semibold">{product.name}</h1>
-          <p className="text-xs text-neutral-400 mb-2">SKU: {product.sku}</p>
-          <p className="text-neutral-600 mb-4">{product.short_description}</p>
+          <h1 className="font-serif font-medium text-3xl">{product.name}</h1>
+          <p className="text-xs text-neutral-400 mb-2 mt-1">SKU: {product.sku}</p>
+          <p className="text-neutral-600 mb-5">{product.short_description}</p>
 
-          <div className="mb-4">
+          <div className="mb-5">
             {hasPromo && (
-              <>
-                <span className="text-neutral-400 line-through mr-2">R$ {Number(product.price).toFixed(2)}</span>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-neutral-400 line-through text-sm">R$ {Number(product.price).toFixed(2)}</span>
                 <span className="text-xs bg-blush-dark text-white px-2 py-0.5 rounded-full">
                   -{Math.round((1 - product.promo_price / product.price) * 100)}%
                 </span>
-              </>
+              </div>
             )}
-            <div className="text-3xl font-bold text-aqua-dark">
+            <div className="text-3xl font-semibold text-aqua-dark">
               R$ {Number(hasPromo ? product.promo_price : product.price).toFixed(2)}
             </div>
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-neutral-500 mt-1">
               em até {product.installments_max}x de R$ {(Number(hasPromo ? product.promo_price : product.price) / product.installments_max).toFixed(2)} sem juros
             </p>
           </div>
@@ -101,28 +105,28 @@ export default function ProductPage() {
             <OptionGroup label="Tamanho" options={sizes} selected={size} onSelect={setSize} />
           )}
 
-          <div className="flex items-center gap-3 my-4">
+          <div className="flex items-center gap-3 my-5">
             <label className="text-sm">Quantidade</label>
             <input type="number" min={1} value={quantity}
               onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
-              className="w-16 border rounded-lg px-2 py-1" />
+              className={`${inputClass} w-16`} />
           </div>
 
           <div className="flex gap-3 mb-4">
-            <button onClick={handleAddToCart} className="flex-1 border-2 border-aqua text-aqua-dark rounded-full py-3 font-medium hover:bg-aqua-light/30">
+            <button onClick={handleAddToCart} className="flex-1 btn-outline">
               Adicionar ao Carrinho
             </button>
-            <button onClick={handleAddToCart} className="flex-1 bg-aqua text-white rounded-full py-3 font-medium hover:bg-aqua-dark">
+            <button onClick={handleAddToCart} className="flex-1 btn-primary">
               Comprar Agora
             </button>
           </div>
-          <button className="text-sm text-blush-dark mb-6">♥ Favoritar</button>
+          <button className="text-sm text-blush-dark mb-6 hover:text-blush-dark/70 transition-colors">♥ Favoritar</button>
 
-          <div className="border-t pt-4">
+          <div className="border-t border-neutral-200 pt-5">
             <div className="flex gap-2 mb-2">
               <input placeholder="Digite seu CEP" value={cep} onChange={(e) => setCep(e.target.value)}
-                className="border rounded-lg px-3 py-2 text-sm flex-1" />
-              <button onClick={calcShipping} className="text-sm bg-neutral-800 text-white rounded-lg px-4">Calcular</button>
+                className={`${inputClass} flex-1`} />
+              <button onClick={calcShipping} className="text-sm bg-neutral-800 text-white rounded-xl px-4 hover:bg-neutral-700 transition-colors">Calcular</button>
             </div>
             {shippingOptions?.map((opt) => (
               <p key={opt.name} className="text-sm text-neutral-600">
@@ -131,16 +135,16 @@ export default function ProductPage() {
             ))}
           </div>
 
-          <div className="border-t mt-6 pt-4 text-sm text-neutral-700 whitespace-pre-line">
+          <div className="border-t border-neutral-200 mt-6 pt-5 text-sm text-neutral-700 whitespace-pre-line">
             {product.description}
           </div>
         </div>
       </div>
 
       {related.length > 0 && (
-        <section className="mt-16">
-          <h2 className="text-xl font-semibold mb-4">Produtos relacionados</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <section className="mt-20">
+          <h2 className="font-serif font-medium text-2xl mb-6">Produtos relacionados</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {related.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>
         </section>
@@ -151,12 +155,12 @@ export default function ProductPage() {
 
 function OptionGroup({ label, options, selected, onSelect }) {
   return (
-    <div className="mb-3">
-      <p className="text-sm font-medium mb-1">{label}</p>
+    <div className="mb-4">
+      <p className="text-sm font-medium mb-1.5">{label}</p>
       <div className="flex gap-2 flex-wrap">
         {options.map((opt) => (
           <button key={opt} onClick={() => onSelect(opt)}
-            className={`px-3 py-1 rounded-full border text-sm ${selected === opt ? 'bg-aqua text-white border-aqua' : 'border-neutral-300'}`}>
+            className={`px-3 py-1 rounded-full border text-sm transition-colors ${selected === opt ? 'bg-aqua text-white border-aqua' : 'border-neutral-300 hover:border-aqua'}`}>
             {opt}
           </button>
         ))}

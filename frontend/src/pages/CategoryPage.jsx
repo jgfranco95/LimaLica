@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import api from '../services/api'
 import ProductCard from '../components/ProductCard'
+
+const inputClass =
+  'w-full border border-neutral-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-aqua/40 focus:border-aqua transition'
 
 export default function CategoryPage() {
   const { slug } = useParams()
@@ -22,12 +25,12 @@ export default function CategoryPage() {
   }, [slug, filters])
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 grid md:grid-cols-[220px_1fr] gap-8">
+    <div className="max-w-7xl mx-auto px-4 py-10 grid md:grid-cols-[220px_1fr] gap-10">
       <aside className="space-y-6">
-        <h2 className="font-semibold capitalize">{slug.replace('-', ' ')}</h2>
+        <h2 className="font-serif font-medium text-2xl capitalize">{slug.replace('-', ' ')}</h2>
 
         <FilterGroup label="Cor">
-          <select className="w-full border rounded-lg px-2 py-1 text-sm" onChange={(e) => setFilters((f) => ({ ...f, color: e.target.value }))}>
+          <select className={inputClass} onChange={(e) => setFilters((f) => ({ ...f, color: e.target.value }))}>
             <option value="">Todas</option>
             <option value="Rosa">Rosa</option>
             <option value="Verde">Verde</option>
@@ -37,14 +40,14 @@ export default function CategoryPage() {
         </FilterGroup>
 
         <FilterGroup label="Tamanho">
-          <select className="w-full border rounded-lg px-2 py-1 text-sm" onChange={(e) => setFilters((f) => ({ ...f, size: e.target.value }))}>
+          <select className={inputClass} onChange={(e) => setFilters((f) => ({ ...f, size: e.target.value }))}>
             <option value="">Todos</option>
             {['PP', 'P', 'M', 'G', 'GG'].map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </FilterGroup>
 
         <FilterGroup label="Gênero">
-          <select className="w-full border rounded-lg px-2 py-1 text-sm" onChange={(e) => setFilters((f) => ({ ...f, gender: e.target.value }))}>
+          <select className={inputClass} onChange={(e) => setFilters((f) => ({ ...f, gender: e.target.value }))}>
             <option value="">Todos</option>
             <option value="feminino">Feminino</option>
             <option value="masculino">Masculino</option>
@@ -54,9 +57,9 @@ export default function CategoryPage() {
 
         <FilterGroup label="Faixa de preço">
           <div className="flex gap-2">
-            <input placeholder="Min" type="number" className="w-full border rounded-lg px-2 py-1 text-sm"
+            <input placeholder="Min" type="number" className={inputClass}
               onChange={(e) => setFilters((f) => ({ ...f, min_price: e.target.value }))} />
-            <input placeholder="Max" type="number" className="w-full border rounded-lg px-2 py-1 text-sm"
+            <input placeholder="Max" type="number" className={inputClass}
               onChange={(e) => setFilters((f) => ({ ...f, max_price: e.target.value }))} />
           </div>
         </FilterGroup>
@@ -64,11 +67,11 @@ export default function CategoryPage() {
 
       <div>
         {loading ? (
-          <p>Carregando...</p>
+          <p className="text-neutral-500">Carregando...</p>
         ) : products.length === 0 ? (
           <p className="text-neutral-500">Nenhum produto encontrado com esses filtros.</p>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>
         )}
@@ -80,7 +83,7 @@ export default function CategoryPage() {
 function FilterGroup({ label, children }) {
   return (
     <div>
-      <p className="text-sm font-medium mb-1">{label}</p>
+      <p className="text-sm font-medium mb-1.5">{label}</p>
       {children}
     </div>
   )

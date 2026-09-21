@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import api from '../services/api'
 import ProductCard from '../components/ProductCard'
 
+const STORAGE_BASE = import.meta.env.VITE_API_URL?.replace('/api', '')
+
 export default function Home() {
   const [banners, setBanners] = useState([])
   const [featured, setFeatured] = useState([])
@@ -17,47 +19,93 @@ export default function Home() {
     api.get('/products', { params: { sort: 'recent', per_page: 8 } }).then((r) => setBestSellers(r.data.data))
   }, [])
 
+  const banner = banners[0]
+
   return (
     <div>
-      {/* Banner principal rotativo */}
-      <section className="max-w-7xl mx-auto px-4 pt-6">
-        <div className="rounded-3xl overflow-hidden bg-gradient-to-r from-aqua-light to-blush-light h-64 md:h-96 flex items-center justify-center">
-          {banners.length > 0 ? (
-            <img
-              src={`${import.meta.env.VITE_API_URL?.replace('/api', '')}/storage/${banners[0].image_path}`}
-              alt={banners[0].title}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <p className="text-2xl font-light text-aqua-dark">Bem-vinda à Lima Lica 💖</p>
-          )}
+      {/* Hero editorial: imagem grande + tipografia sobreposta, com entrada suave */}
+      <section className="relative h-[78vh] md:h-[88vh] overflow-hidden">
+        {banner ? (
+          <img
+            src={`${STORAGE_BASE}/storage/${banner.image_path}`}
+            alt={banner.title}
+            className="absolute inset-0 w-full h-full animate-fade-in"
+            style={{ objectFit: 'cover', objectPosition: 'center' }}
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-aqua-light to-blush-light animate-fade-in" />
+        )}
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-black/0" />
+
+        <div className="absolute bottom-10 left-6 md:left-14 right-6 md:right-auto text-white max-w-xl">
+          <h1 className="font-serif font-medium text-5xl md:text-7xl leading-[0.95] tracking-tight animate-fade-in-up">
+            {banner?.title || 'Lima Lica'}
+          </h1>
+          <p className="mt-3 text-base md:text-lg font-light animate-fade-in-up-delay">
+            {banner?.subtitle || 'peças pensadas pro seu dia a dia'}
+          </p>
         </div>
       </section>
 
-      <ProductSection title="Produtos em Destaque" products={featured} />
-      <ProductSection title="Promoções" products={promos} accent />
-      <ProductSection title="Novidades" products={news} />
-      <ProductSection title="Mais Vendidos" products={bestSellers} />
-
+      {/* Faixa de benefícios com cards e efeito hover */}
       <section className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-sm">
-        {['Frete grátis acima de R$299', 'Troca grátis em 30 dias', 'Pagamento seguro', 'Parcelamento em até 10x'].map((b) => (
-          <div key={b} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+        {[
+          'Frete grátis acima de R$299',
+          'Troca grátis em 30 dias',
+          'Pagamento seguro',
+          'Parcelamento em até 10x',
+        ].map((b) => (
+          <div
+            key={b}
+            className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+          >
             {b}
           </div>
         ))}
       </section>
+
+      <ProductSection title="Em destaque" eyebrow="selecionado pra você" products={featured} size="large" />
+
+      {/* Promoções: fundo de cor pra quebrar o ritmo repetitivo das seções */}
+      {promos.length > 0 && (
+        <section className="bg-blush-light py-14 mt-4">
+          <div className="max-w-6xl mx-auto px-6">
+            <SectionHeading title="Promoções" eyebrow="por tempo limitado" />
+            <ProductGrid products={promos} />
+          </div>
+        </section>
+      )}
+
+      <ProductSection title="Novidades" eyebrow="acabou de chegar" products={news} />
+      <ProductSection title="Mais vendidos" eyebrow="favoritos da galera" products={bestSellers} />
     </div>
   )
 }
 
-function ProductSection({ title, products, accent }) {
+function SectionHeading({ title, eyebrow }) {
+  return (
+    <div className="mb-6">
+      <h2 className="font-serif font-medium text-3xl md:text-4xl text-neutral-900">{title}</h2>
+      {eyebrow && <p className="text-sm text-neutral-500 mt-1">{eyebrow}</p>}
+    </div>
+  )
+}
+
+function ProductGrid({ products, size }) {
+  return (
+    <div className={size === 'large' ? 'grid grid-cols-2 md:grid-cols-3 gap-6' : 'grid grid-cols-2 md:grid-cols-4 gap-5'}>
+      {products.map((p) => <ProductCard key={p.id} product={p} />)}
+    </div>
+  )
+}
+
+function ProductSection({ title, eyebrow, products, size }) {
   if (!products.length) return null
   return (
-    <section className="max-w-7xl mx-auto px-4 py-8">
-      <h2 className={`text-xl font-semibold mb-4 ${accent ? 'text-blush-dark' : 'text-neutral-800'}`}>{title}</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {products.map((p) => <ProductCard key={p.id} product={p} />)}
-      </div>
+    <section className="max-w-6xl mx-auto px-6 py-12">
+      <SectionHeading title={title} eyebrow={eyebrow} />
+      <ProductGrid products={products} size={size} />
     </section>
   )
 }

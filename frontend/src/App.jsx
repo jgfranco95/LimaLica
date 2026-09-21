@@ -11,6 +11,11 @@ import CheckoutPage from './pages/CheckoutPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import AccountPage from './pages/AccountPage'
+import AboutPage from './pages/AboutPage'
+import HelpPage from './pages/HelpPage'
+import ContactPage from './pages/ContactPage'
+import ReturnsPage from './pages/ReturnsPage'
+import PrivacyPage from './pages/PrivacyPage'
 
 import AdminLayout from './pages/admin/AdminLayout'
 import AdminLogin from './pages/admin/AdminLogin'
@@ -70,6 +75,11 @@ export default function App() {
               />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/cadastro" element={<RegisterPage />} />
+              <Route path="/sobre" element={<AboutPage />} />
+              <Route path="/ajuda" element={<HelpPage />} />
+              <Route path="/contato" element={<ContactPage />} />
+              <Route path="/trocas" element={<ReturnsPage />} />
+              <Route path="/privacidade" element={<PrivacyPage />} />
               <Route
                 path="/minha-conta/*"
                 element={

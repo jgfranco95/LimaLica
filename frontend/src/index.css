@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  @apply bg-neutral-50 text-neutral-800 font-sans;
+  @apply bg-[#FAF8F5] text-neutral-800 font-sans;
+}
+
+::selection {
+  background-color: theme('colors.aqua.light');
+  color: theme('colors.neutral.900');
+}
+
+/* Botões com resposta tátil consistente em todo o site */
+.btn-primary {
+  @apply bg-aqua text-white rounded-full px-6 py-3 font-medium shadow-sm
+    transition-all duration-200 ease-out
+    hover:bg-aqua-dark hover:shadow-md hover:-translate-y-0.5
+    active:translate-y-0 active:shadow-sm
+    disabled:opacity-50 disabled:pointer-events-none;
+}
+
+.btn-outline {
+  @apply border-2 border-aqua text-aqua-dark rounded-full px-6 py-3 font-medium
+    transition-all duration-200 ease-out
+    hover:bg-aqua-light/30 hover:-translate-y-0.5
+    active:translate-y-0;
+}
+
+/* Sublinhado animado para links de navegação */
+.nav-link {
+  @apply relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1.5px;
+  width: 0%;
+  background-color: currentColor;
+  transition: width 0.25s ease-out;
+}
+.nav-link:hover::after {
+  width: 100%;
 }

@@ -6,11 +6,28 @@ import ProductCard from '../components/ProductCard'
 const inputClass =
   'w-full border border-neutral-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-aqua/40 focus:border-aqua transition'
 
+// Numeração de calçados: 36 a 44
+const SHOE_SIZES = Array.from({ length: 9 }, (_, i) => 36 + i)
+
+// Tipos de roupa e coleção — deixados comentados por enquanto.
+// Quando quiser ativar, é só descomentar o bloco no JSX mais abaixo
+// e voltar a usar essas constantes.
+// const CLOTHING_TYPES = ['Vestidos', 'Camisas', 'Camisetas']
+// const IS_WINTER_COLLECTION = true
+
 export default function CategoryPage() {
   const { slug } = useParams()
+  const isShoes = slug === 'calcados'
+
   const [products, setProducts] = useState([])
-  const [filters, setFilters] = useState({ color: '', size: '', min_price: '', max_price: '', brand_id: '', gender: '' })
+  const [filters, setFilters] = useState({ gender: '', size: '', min_price: '', max_price: '' })
   const [loading, setLoading] = useState(true)
+
+  // Zera os filtros ao trocar de categoria, pra não vazar filtro de
+  // calçado (numeração) pra uma categoria de roupa, por exemplo.
+  useEffect(() => {
+    setFilters({ gender: '', size: '', min_price: '', max_price: '' })
+  }, [slug])
 
   useEffect(() => {
     setLoading(true)
@@ -29,38 +46,81 @@ export default function CategoryPage() {
       <aside className="space-y-6">
         <h2 className="font-serif font-medium text-2xl capitalize">{slug.replace('-', ' ')}</h2>
 
-        <FilterGroup label="Cor">
-          <select className={inputClass} onChange={(e) => setFilters((f) => ({ ...f, color: e.target.value }))}>
-            <option value="">Todas</option>
-            <option value="Rosa">Rosa</option>
-            <option value="Verde">Verde</option>
-            <option value="Branco">Branco</option>
-            <option value="Preto">Preto</option>
-          </select>
-        </FilterGroup>
+        {isShoes ? (
+          <>
+            <FilterGroup label="Gênero">
+              <select
+                className={inputClass}
+                value={filters.gender}
+                onChange={(e) => setFilters((f) => ({ ...f, gender: e.target.value }))}
+              >
+                <option value="">Todos</option>
+                <option value="feminino">Feminino</option>
+                <option value="masculino">Masculino</option>
+              </select>
+            </FilterGroup>
 
-        <FilterGroup label="Tamanho">
-          <select className={inputClass} onChange={(e) => setFilters((f) => ({ ...f, size: e.target.value }))}>
-            <option value="">Todos</option>
-            {['PP', 'P', 'M', 'G', 'GG'].map((s) => <option key={s} value={s}>{s}</option>)}
-          </select>
-        </FilterGroup>
+            <FilterGroup label="Numeração">
+              <div className="flex flex-wrap gap-2">
+                {SHOE_SIZES.map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => setFilters((f) => ({ ...f, size: f.size === String(n) ? '' : String(n) }))}
+                    className={`w-10 h-10 rounded-full border text-sm transition-colors ${
+                      filters.size === String(n)
+                        ? 'bg-aqua text-white border-aqua'
+                        : 'border-neutral-300 hover:border-aqua'
+                    }`}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+            </FilterGroup>
+          </>
+        ) : (
+          <>
+            {/*
+              Filtro por tipo de roupa e coleção de inverno — desativado
+              por enquanto a pedido. Pra ativar, descomente as constantes
+              CLOTHING_TYPES / IS_WINTER_COLLECTION no topo do arquivo e
+              este bloco:
 
-        <FilterGroup label="Gênero">
-          <select className={inputClass} onChange={(e) => setFilters((f) => ({ ...f, gender: e.target.value }))}>
-            <option value="">Todos</option>
-            <option value="feminino">Feminino</option>
-            <option value="masculino">Masculino</option>
-            <option value="infantil">Infantil</option>
-          </select>
-        </FilterGroup>
+              <FilterGroup label="Tipo">
+                <select className={inputClass}
+                  onChange={(e) => setFilters((f) => ({ ...f, type: e.target.value }))}>
+                  <option value="">Todos</option>
+                  {CLOTHING_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </FilterGroup>
+
+              <FilterGroup label="Coleção">
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox"
+                    onChange={(e) => setFilters((f) => ({ ...f, winter: e.target.checked ? 1 : '' }))} />
+                  Coleção de Inverno
+                </label>
+              </FilterGroup>
+            */}
+          </>
+        )}
 
         <FilterGroup label="Faixa de preço">
           <div className="flex gap-2">
-            <input placeholder="Min" type="number" className={inputClass}
-              onChange={(e) => setFilters((f) => ({ ...f, min_price: e.target.value }))} />
-            <input placeholder="Max" type="number" className={inputClass}
-              onChange={(e) => setFilters((f) => ({ ...f, max_price: e.target.value }))} />
+            <input
+              placeholder="Min"
+              type="number"
+              value={filters.min_price}
+              className={inputClass}
+              onChange={(e) => setFilters((f) => ({ ...f, min_price: e.target.value }))}
+            />
+            <input
+              placeholder="Max"
+              type="number"
+              value={filters.max_price}
+              className={inputClass}
+              onChange={(e) => setFilters((f) => ({ ...f, max_price: e.target.value }))}
+            />
           </div>
         </FilterGroup>
       </aside>

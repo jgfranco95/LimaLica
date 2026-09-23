@@ -38,9 +38,10 @@ export default function ContactPage() {
       )}
 
       <div className="mt-10 text-sm text-neutral-600 space-y-1">
-        <p>📧 contato@limalica.com.br</p>
-        <p>📱 (11) 91234-5678 — WhatsApp e telefone</p>
-        <p>🕑 Atendimento de segunda a sexta, 9h às 18h</p>
+        <p>📧 lima_lica@hotmail.com.br</p>
+        <p>📱 +55 15 99810-0676 — WhatsApp e telefone<a></a></p>
+        <p>🕑 Atendimento de segunda a sexta, 9h às 18:30h</p>
+        <p>E sábado das 09h às 13:30h</p>
       </div>
     </div>
   )

@@ -10,3 +10,6 @@ php artisan route:cache
 
 echo "Rodando migrations no banco (Supabase)..."
 php artisan migrate --force
+
+echo "Garantindo que existe um usuário admin..."
+php artisan db:seed --class=Database\\Seeders\\AdminUserSeeder --force

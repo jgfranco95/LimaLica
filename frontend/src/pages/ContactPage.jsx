@@ -39,7 +39,7 @@ export default function ContactPage() {
 
       <div className="mt-10 text-sm text-neutral-600 space-y-1">
         <p>📧 lima_lica@hotmail.com.br</p>
-        <p>📱 +55 15 99810-0676 — WhatsApp e telefone<a></a></p>
+        <p>📱 +55 15 99810-0676 — WhatsApp e telefone<a>https://wa.me/5515998100676</a></p>
         <p>🕑 Atendimento de segunda a sexta, 9h às 18:30h</p>
         <p>E sábado das 09h às 13:30h</p>
       </div>

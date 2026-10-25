@@ -48,3 +48,12 @@ body {
 .nav-link:hover::after {
   width: 100%;
 }
+
+/* Esconde a barra de rolagem dos carrosséis (continua rolando com o dedo/mouse) */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

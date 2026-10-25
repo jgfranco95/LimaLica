@@ -29,11 +29,16 @@ export default {
           '0%': { opacity: 0 },
           '100%': { opacity: 1 },
         },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.7s ease-out both',
         'fade-in-up-delay': 'fadeInUp 0.7s ease-out 0.15s both',
         'fade-in': 'fadeIn 0.8s ease-out both',
+        marquee: 'marquee 35s linear infinite',
       },
     },
   },

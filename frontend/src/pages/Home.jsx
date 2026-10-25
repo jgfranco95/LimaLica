@@ -70,6 +70,10 @@ export default function Home() {
 
       <Marquee />
 
+      {/* Novas seções de interatividade */}
+      {/* <InstagramStories />
+      <ShopTheLook /> */}
+
       {/* Faixa de benefícios com cards e efeito hover */}
       <section className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-sm">
         {[
@@ -79,7 +83,7 @@ export default function Home() {
           'Parcelamento em até 10x',
         ].map((b, i) => (
           <Reveal key={b} delay={i * 80}>
-            <div className="bg-white border border-[#F4D9DC]/60 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-[#E8BEC2] hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+            <div className="bg-white border border-[#F4D9DC]/60 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-[#E8BEC2] hover:-translate-y-1 transition-all duration-300 cursor-pointer text-neutral-700">
               {b}
             </div>
           </Reveal>
@@ -133,6 +137,83 @@ export default function Home() {
 
       <BrandBlock />
     </div>
+  )
+}
+
+/* ---------------------------------------------------------------- */
+/* NOVAS SEÇÕES VISUAIS E INTERATIVAS                               */
+/* ---------------------------------------------------------------- */
+
+function InstagramStories() {
+  const stories = [
+    { title: 'Chegou Hoje', img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=200&q=80' },
+    { title: 'Looks de Fim de Semana', img: 'https://images.unsplash.com/photo-1550639524-a6f58345a278?auto=format&fit=crop&w=200&q=80' },
+    { title: 'Novidades', img: 'https://images.unsplash.com/photo-1434389678369-1841bf113d3d?auto=format&fit=crop&w=200&q=80' },
+    { title: 'Favoritos', img: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=200&q=80' },
+  ];
+
+  return (
+    <section className="max-w-6xl mx-auto px-6 py-10 mt-4">
+      <div className="flex gap-6 overflow-x-auto no-scrollbar snap-x pb-4 justify-start md:justify-center">
+        {stories.map((story, i) => (
+          <div key={i} className="flex flex-col items-center gap-2 shrink-0 cursor-pointer group snap-start">
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full p-[3px] bg-gradient-to-tr from-[#B86B77] via-[#F4D9DC] to-[#D9B88F] transition-transform duration-300 group-hover:scale-105">
+              <div className="w-full h-full rounded-full border-2 border-white overflow-hidden">
+                <img src={story.img} alt={story.title} className="w-full h-full object-cover" />
+              </div>
+            </div>
+            <span className="text-xs font-medium text-neutral-700 text-center max-w-[90px]">{story.title}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function ShopTheLook() {
+  return (
+    <section className="max-w-6xl mx-auto px-6 py-12">
+      <Reveal>
+        <div className="flex flex-col md:flex-row gap-10 items-center bg-[#FDF8F9] rounded-3xl p-6 md:p-10 border border-[#F4D9DC]">
+          
+          {/* Foto Principal com Hotspots */}
+          <div className="relative w-full md:w-1/2 aspect-[4/5] rounded-2xl overflow-hidden shadow-sm">
+            <img 
+              src="https://images.unsplash.com/photo-1515347619362-7934c5689100?auto=format&fit=crop&w=800&q=80" 
+              alt="Look completo" 
+              className="w-full h-full object-cover"
+            />
+            
+            {/* Ponto Interativo 1 (Vestido) */}
+            <div className="absolute top-[45%] left-[40%] group">
+              <div className="w-4 h-4 bg-white rounded-full shadow-lg border-2 border-[#B86B77] animate-pulse cursor-pointer"></div>
+              <div className="absolute top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-neutral-900 text-xs font-medium px-4 py-2 rounded-lg shadow-xl w-36 pointer-events-none z-10 text-center">
+                Vestido Midi Rosê <br/><span className="text-[#B86B77]">R$ 189,90</span>
+              </div>
+            </div>
+
+            {/* Ponto Interativo 2 (Bolsa) */}
+            <div className="absolute top-[65%] left-[30%] group">
+              <div className="w-4 h-4 bg-white rounded-full shadow-lg border-2 border-[#D9B88F] animate-pulse cursor-pointer"></div>
+              <div className="absolute top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-neutral-900 text-xs font-medium px-4 py-2 rounded-lg shadow-xl w-32 pointer-events-none z-10 text-center">
+                Bolsa Palha <br/><span className="text-[#B86B77]">R$ 129,90</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Texto ao lado */}
+          <div className="w-full md:w-1/2 space-y-6 text-center md:text-left">
+            <p className="text-xs tracking-[0.3em] uppercase text-[#B86B77] font-semibold">Inspiração</p>
+            <h2 className="font-serif text-4xl text-neutral-900 leading-tight">Compre o Look Completo</h2>
+            <p className="text-neutral-600">Gostou da combinação? Passe o mouse sobre as bolinhas na imagem para ver os detalhes de cada peça e adicionar diretamente à sua sacola.</p>
+            <button className="bg-neutral-900 text-white rounded-full px-8 py-3 text-sm font-medium transition-all hover:bg-[#B86B77] hover:-translate-y-1">
+              Adicionar Look à Sacola
+            </button>
+          </div>
+
+        </div>
+      </Reveal>
+    </section>
   )
 }
 

@@ -1,7 +1,8 @@
 export default function AboutPage() {
   return (
     <div>
-      <section className="relative h-[46vh] md:h-[56vh] overflow-hidden bg-gradient-to-br from-aqua-light to-blush-light flex items-end">
+      {/* Degradê ajustado para os tons de rosa da logo */}
+      <section className="relative h-[46vh] md:h-[56vh] overflow-hidden bg-gradient-to-br from-[#FDF6F7] via-[#F4D9DC] to-[#E8BEC2] flex items-end">
         <div className="max-w-5xl mx-auto px-6 pb-10 w-full">
           <h1 className="font-serif font-medium text-4xl md:text-6xl text-neutral-900 animate-fade-in-up">
             Sobre a Lima Lica
@@ -20,10 +21,10 @@ export default function AboutPage() {
           ocasiões que pedem um look especial.
         </p>
         <p>
-          Trabalhamos com fornecedores que compartilham nossos valores de qualidade
-          e respeito, e revisamos cada coleção pensando em conforto, caimento e
-          durabilidade. Nosso time de curadoria testa as peças antes de colocá-las
-          no site, porque acreditamos que moda boa é aquela que a gente usa de
+          Trabalhamos com parceiros que compartilham nossos valores de qualidade
+          e preço justo, trazendo sempre novidades que unem conforto, bom caimento
+          e estilo. Pensamos em cada detalhe para oferecer opções versáteis e
+          acessíveis, porque acreditamos que moda boa é aquela que a gente usa de
           verdade.
         </p>
         <p>
@@ -34,15 +35,15 @@ export default function AboutPage() {
         </p>
       </section>
 
-      <section className="bg-blush-light/40 py-14">
+      <section className="bg-[#FDF4F5] py-14">
         <div className="max-w-5xl mx-auto px-6 grid sm:grid-cols-3 gap-8 text-center">
           {[
-            { title: 'Curadoria própria', text: 'Cada peça é escolhida e aprovada pelo nosso time antes de chegar até você.' },
+            { title: 'Escolhas com carinho', text: 'Peças pensadas para o dia a dia, unindo conforto, estilo e preço justo.' },
             { title: 'Compra sem medo', text: 'Troca grátis em até 30 dias e pagamento 100% seguro.' },
-            { title: 'Feito pra todo mundo', text: 'Coleções feminina, masculina e infantil, do PP ao GG.' },
+            { title: 'Feito pra todo mundo', text: 'Opções feminina, masculina e infantil, vestindo toda a família.' },
           ].map((item) => (
-            <div key={item.title} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-              <h3 className="font-serif font-medium text-lg mb-2">{item.title}</h3>
+            <div key={item.title} className="bg-white rounded-2xl p-6 shadow-sm border border-[#F4D9DC]/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+              <h3 className="font-serif font-medium text-lg mb-2 text-neutral-900">{item.title}</h3>
               <p className="text-sm text-neutral-600">{item.text}</p>
             </div>
           ))}

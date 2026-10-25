@@ -5,18 +5,12 @@ import ProductCard from '../components/ProductCard'
 import Reveal from '../components/Reveal'
 import { HeroSkeleton, HeroStatic } from '../components/HeroOverlay'
 
-// O 3D (three.js + GSAP) vai num pacote separado: só baixa quando a Home abre,
-// e o resto do site não fica mais pesado por causa dele.
 const Hero3D = lazy(() => import('../components/Hero3D'))
-
-// Quando tiver um modelo 3D seu (.glb), coloque em frontend/public/models/
-// e troque null pelo caminho, ex.: '/models/vestido.glb'
 const HERO_MODEL_URL = null
 
 const STORAGE_BASE = import.meta.env.VITE_API_URL?.replace('/api', '')
 const imgUrl = (path) => (path?.startsWith('http') ? path : `${STORAGE_BASE}/storage/${path}`)
 
-// Só usa o 3D se o aparelho aguenta e a pessoa não pediu "reduzir movimento".
 function canUse3D() {
   if (typeof window === 'undefined') return false
   if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return false
@@ -79,13 +73,13 @@ export default function Home() {
       {/* Faixa de benefícios com cards e efeito hover */}
       <section className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-sm">
         {[
-          'Frete grátis acima de R$299',
+          'Frete para qualquer lugar do Brasil',
           'Troca grátis em 30 dias',
           'Pagamento seguro',
           'Parcelamento em até 10x',
         ].map((b, i) => (
           <Reveal key={b} delay={i * 80}>
-            <div className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+            <div className="bg-white border border-[#F4D9DC]/60 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-[#E8BEC2] hover:-translate-y-1 transition-all duration-300 cursor-pointer">
               {b}
             </div>
           </Reveal>
@@ -106,27 +100,35 @@ export default function Home() {
 
       {featured.length > 0 && (
         <Section title="Em destaque" eyebrow="selecionado pra você" to="/categoria/feminino">
-          <ProductCarousel products={featured} />
+          
+
+<ProductCarousel products={featured} />
         </Section>
       )}
 
       {promos.length > 0 && (
-        <div className="bg-blush-light mt-6 py-4">
+        <div className="bg-gradient-to-r from-[#FDF4F5] via-[#F4D9DC]/60 to-[#FDF4F5] mt-6 py-4">
           <Section title="Promoções" eyebrow="por tempo limitado" to="/categoria/promocoes">
-            <ProductCarousel products={promos} />
+            
+
+<ProductCarousel products={promos} />
           </Section>
         </div>
       )}
 
       {news.length > 0 && (
         <Section title="Novidades" eyebrow="acabou de chegar" to="/categoria/novidades">
-          <ProductCarousel products={news} />
+          
+
+<ProductCarousel products={news} />
         </Section>
       )}
 
-      {/* Vitrine geral: sempre aparece, mesmo sem produto marcado como destaque/promo/novidade */}
+      {/* Vitrine geral */}
       <Section title="Vitrine da loja" eyebrow="peças recém-cadastradas" to="/categoria/feminino">
-        {loaded ? <ProductCarousel products={recent} /> : <CarouselSkeleton />}
+        {loaded ? 
+
+<ProductCarousel products={recent} /> : <CarouselSkeleton />}
       </Section>
 
       <BrandBlock />
@@ -139,14 +141,14 @@ export default function Home() {
 function Marquee() {
   const items = ['Moda pra todo dia', 'Feminino', 'Masculino', 'Infantil', 'Calçados do 36 ao 44', 'Acessórios']
   return (
-    <div className="overflow-hidden border-y border-blush-light bg-white/60 py-3" aria-hidden="true">
+    <div className="overflow-hidden border-y border-[#F4D9DC] bg-[#FDF8F9] py-3" aria-hidden="true">
       <div className="flex w-max animate-marquee motion-reduce:animate-none">
         {[0, 1].map((k) => (
           <div key={k} className="flex shrink-0 items-center gap-8 pr-8">
             {items.map((item) => (
               <span key={item} className="flex items-center gap-8 font-serif text-lg text-neutral-700 whitespace-nowrap">
                 {item}
-                <span className="text-aqua text-base">✦</span>
+                <span className="text-[#C89D54] text-base">✦</span>
               </span>
             ))}
           </div>
@@ -156,12 +158,13 @@ function Marquee() {
   )
 }
 
+// Paleta toda em tons de Rosa (da logo) e Champagne/Dourado suave
 const TILES = [
-  { name: 'Feminino', slug: 'feminino', bg: 'bg-blush', className: 'col-span-2 md:row-span-2', big: true },
-  { name: 'Masculino', slug: 'masculino', bg: 'bg-aqua-light' },
-  { name: 'Infantil', slug: 'infantil', bg: 'bg-[#FBEFD5]' },
-  { name: 'Calçados', slug: 'calcados', bg: 'bg-aqua' },
-  { name: 'Acessórios', slug: 'acessorios', bg: 'bg-blush-light' },
+  { name: 'Feminino', slug: 'feminino', bg: 'bg-gradient-to-br from-[#F4D9DC] to-[#E6B8BE]', className: 'col-span-2 md:row-span-2', big: true },
+  { name: 'Masculino', slug: 'masculino', bg: 'bg-gradient-to-br from-[#F9ECEE] to-[#EED2D6]' },
+  { name: 'Infantil', slug: 'infantil', bg: 'bg-gradient-to-br from-[#FBEFD5] to-[#F3DFB6]' },
+  { name: 'Calçados', slug: 'calcados', bg: 'bg-gradient-to-br from-[#EBC5C9] to-[#DFA8AE]' },
+  { name: 'Acessórios', slug: 'acessorios', bg: 'bg-gradient-to-br from-[#FDF4F5] to-[#F4D9DC]' },
 ]
 
 function CategoryTiles() {
@@ -177,7 +180,6 @@ function CategoryTiles() {
               to={`/categoria/${t.slug}`}
               className={`group relative flex h-full flex-col justify-end overflow-hidden rounded-3xl p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${t.bg}`}
             >
-              {/* círculos decorativos que crescem no hover */}
               <span className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/40 transition-transform duration-500 group-hover:scale-150" />
               <span className="absolute right-10 top-16 h-12 w-12 rounded-full bg-white/30 transition-transform duration-500 group-hover:scale-125" />
               <span className={`relative font-serif font-medium text-neutral-900 ${t.big ? 'text-3xl md:text-5xl' : 'text-2xl'}`}>
@@ -205,7 +207,7 @@ function Section({ title, eyebrow, to, children }) {
             {eyebrow && <p className="mt-1 text-sm text-neutral-500">{eyebrow}</p>}
           </div>
           {to && (
-            <Link to={to} className="nav-link shrink-0 text-sm text-aqua-dark hover:text-neutral-900 transition-colors">
+            <Link to={to} className="nav-link shrink-0 text-sm text-[#B86B77] hover:text-neutral-900 transition-colors font-medium">
               Ver tudo →
             </Link>
           )}
@@ -263,9 +265,9 @@ function CarouselSkeleton() {
     <div className="flex gap-5 overflow-hidden">
       {Array.from({ length: 4 }).map((_, i) => (
         <div key={i} className="w-[46%] shrink-0 sm:w-[31%] lg:w-[23%]">
-          <div className="mb-3 aspect-square animate-pulse rounded-2xl bg-blush-light/60" />
-          <div className="mb-2 h-3 w-2/3 animate-pulse rounded bg-blush-light/60" />
-          <div className="h-3 w-1/3 animate-pulse rounded bg-blush-light/60" />
+          <div className="mb-3 aspect-square animate-pulse rounded-2xl bg-[#F4D9DC]/60" />
+          <div className="mb-2 h-3 w-2/3 animate-pulse rounded bg-[#F4D9DC]/60" />
+          <div className="h-3 w-1/3 animate-pulse rounded bg-[#F4D9DC]/60" />
         </div>
       ))}
     </div>
@@ -276,7 +278,7 @@ function BrandBlock() {
   return (
     <section className="max-w-4xl mx-auto px-6 py-20 text-center">
       <Reveal>
-        <p className="text-xs tracking-[0.3em] uppercase text-aqua-dark mb-4">Sobre a Lima Lica</p>
+        <p className="text-xs tracking-[0.3em] uppercase text-[#B86B77] font-semibold mb-4">Sobre a Lima Lica</p>
         <h2 className="font-serif font-medium text-3xl md:text-5xl leading-tight text-neutral-900">
           Moda boa é a que a gente usa de verdade.
         </h2>
@@ -285,7 +287,7 @@ function BrandBlock() {
         </p>
         <Link
           to="/sobre"
-          className="mt-8 inline-block rounded-full border-2 border-neutral-900 px-7 py-3 text-sm font-medium text-neutral-900 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-900 hover:text-white"
+          className="mt-8 inline-block rounded-full border-2 border-[#B86B77] px-7 py-3 text-sm font-medium text-[#B86B77] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#B86B77] hover:text-white"
         >
           Conheça nossa história
         </Link>

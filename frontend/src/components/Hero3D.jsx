@@ -24,11 +24,13 @@ const START_EXTRA_Z = 7 // quão mais longe a câmera começa antes de se aproxi
 const LOOK_Y = 0.1 // altura pra onde a câmera olha
 const INTRO_SECONDS = 2.6 // duração da aproximação
 const FAILSAFE_MS = 7000 // se algo demorar demais, mostra título/botões mesmo assim
+
+// Cores inspiradas na logo do Espaço Lima Lica (Rosa Blush + Dourado Champagne)
 const COLORS = {
-  dress: '#A9E6DA', // aqua-light
-  sheen: '#F3E0E5', // blush-light
-  pearlA: '#E8C8D0', // blush
-  pearlB: '#7FD8C6', // aqua
+  dress: '#E8BEC2',  // rosa blush principal da logo
+  sheen: '#FFF5F7',  // brilho acetinado rosado bem claro
+  pearlA: '#F4D9DC', // pérola rosa suave
+  pearlB: '#D9B88F', // pérola dourado/champagne da moldura da logo
 }
 
 /* ------------------------------------------------------------
@@ -86,7 +88,7 @@ function ProceduralDress() {
       <mesh geometry={geometry}>
         <meshPhysicalMaterial
           color={COLORS.dress}
-          roughness={0.42}
+          roughness={0.38}
           metalness={0.05}
           clearcoat={0.5}
           clearcoatRoughness={0.35}
@@ -100,7 +102,7 @@ function ProceduralDress() {
         <Float key={i} speed={pearl.speed} rotationIntensity={0.4} floatIntensity={1.2}>
           <mesh position={pearl.p}>
             <sphereGeometry args={[pearl.s, 32, 32]} />
-            <meshPhysicalMaterial color={pearl.c} roughness={0.2} clearcoat={1} />
+            <meshPhysicalMaterial color={pearl.c} roughness={0.18} metalness={0.15} clearcoat={1} />
           </mesh>
         </Float>
       ))}
@@ -142,7 +144,6 @@ function CameraRig({ onDone }) {
   doneRef.current = onDone
 
   useLayoutEffect(() => {
-    // distância final: em celular (tela estreita) precisa afastar mais pra caber
     const aspect = size.width / size.height
     const halfTan = Math.tan((FOV * Math.PI) / 360)
     const endZ = Math.max(MIN_END_Z, MODEL_FIT_WIDTH / (2 * halfTan * aspect))
@@ -161,7 +162,6 @@ function CameraRig({ onDone }) {
     })
 
     return () => tween.kill()
-    // roda só uma vez, ao montar (não reinicia se a janela for redimensionada)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [camera])
 
@@ -169,9 +169,7 @@ function CameraRig({ onDone }) {
 }
 
 /* ------------------------------------------------------------
- * PALCO — interação: o modelo acompanha o mouse, gira ao arrastar
- * (no celular, só o arrasto horizontal; rolar pra baixo continua
- * rolando a página) e fica girando devagar depois da intro.
+ * PALCO — interação
  * ---------------------------------------------------------- */
 function Stage({ introDone, children }) {
   const group = useRef()
@@ -180,14 +178,13 @@ function Stage({ introDone, children }) {
   const auto = useRef(0)
   const drag = useRef({ active: false, lastX: 0, offset: 0 })
 
-  // começa virado de lado e "gira pra frente" durante a intro
   useLayoutEffect(() => {
     if (group.current) group.current.rotation.y = -1.3
   }, [])
 
   useEffect(() => {
     const el = gl.domElement
-    el.style.touchAction = 'pan-y' // vertical = rolar a página; horizontal = girar o modelo
+    el.style.touchAction = 'pan-y'
     el.style.cursor = 'grab'
 
     const onDown = (e) => {
@@ -230,8 +227,6 @@ function Stage({ introDone, children }) {
     g.rotation.x += (targetX - g.rotation.x) * k
   })
 
-  // telas largas: modelo vai pra direita (texto fica à esquerda).
-  // celular: modelo sobe um pouco, pra não ficar todo atrás do texto.
   const wide = aspect > 1.2
   return (
     <group ref={group} position={[wide ? 1.1 : 0, wide ? 0 : 0.5, 0]}>
@@ -243,12 +238,10 @@ function Stage({ introDone, children }) {
 function Scene({ modelUrl, introDone, onIntroComplete }) {
   return (
     <>
-      <ambientLight intensity={1.1} />
+      <ambientLight intensity={1.15} />
       <directionalLight position={[3, 5, 4]} intensity={2.4} />
       <pointLight position={[-4, 1, 3]} intensity={40} color={COLORS.pearlA} />
 
-      {/* Tudo aqui dentro só "monta" depois que o modelo carregou,
-          então a aproximação da câmera começa quando já há o que ver. */}
       <Suspense fallback={null}>
         <Stage introDone={introDone}>
           <Boundary fallback={<ProceduralDress />}>
@@ -261,23 +254,17 @@ function Scene({ modelUrl, introDone, onIntroComplete }) {
   )
 }
 
-/* ------------------------------------------------------------
- * COMPONENTE PRINCIPAL
- * Props: modelUrl (opcional, ex.: "/models/vestido.glb"), title, subtitle
- * ---------------------------------------------------------- */
 export default function Hero3D({ modelUrl = null, ...overlayProps }) {
-  const [introDone, setIntroDone] = useState(false) // vira true quando a câmera termina
+  const [introDone, setIntroDone] = useState(false)
   const [inView, setInView] = useState(true)
   const sectionRef = useRef(null)
   const handleDone = useCallback(() => setIntroDone(true), [])
 
-  // rede de segurança: se o 3D travar/demorar, o título e os botões aparecem mesmo assim
   useEffect(() => {
     const t = setTimeout(handleDone, FAILSAFE_MS)
     return () => clearTimeout(t)
   }, [handleDone])
 
-  // pausa o desenho do 3D quando o hero sai da tela (economiza bateria no celular)
   useEffect(() => {
     const el = sectionRef.current
     if (!el || typeof IntersectionObserver === 'undefined') return
@@ -308,7 +295,6 @@ export default function Hero3D({ modelUrl = null, ...overlayProps }) {
         </Canvas>
       </Boundary>
 
-      {/* título + botões: só aparecem (fade-in) quando introDone vira true */}
       <HeroOverlay visible={introDone} {...overlayProps} />
     </section>
   )
